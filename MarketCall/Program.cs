@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using OpinionMiner;
 using MarketCallLibs;
 using System.IO;
+using MarketCallLibs.DataAccess;
 
 namespace MarketCall
 {
@@ -13,6 +14,13 @@ namespace MarketCall
     {
         static void Main(string[] args)
         {
+            SQLiteDao dao = new SQLiteDao();
+
+            var os = new OpinionStore();
+            dao.Insert(os.Opinions);
+
+            //return;
+
             var q = new Quandl();
 
             var dates = new List<DateTime>();
@@ -54,7 +62,7 @@ namespace MarketCall
                 return;
             }
 
-            var miner = new StockChaseMiner();
+            var miner = new StockChaseOpinionMiner();
 
             Console.Out.WriteLine("Opening opinion storage...");
             var opinionStore = new OpinionStore();

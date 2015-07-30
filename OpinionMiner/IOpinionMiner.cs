@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OpinionMiner
 {
-    public interface IMiner
+    public interface IOpinionMiner
     {
         IEnumerable<Opinion> GetOpinions(DateTime stop, int max);
     }

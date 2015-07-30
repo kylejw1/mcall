@@ -36,19 +36,25 @@ namespace MarketCallLibs
             int closeIndex = headers.IndexOf("close");
             int volumeIndex = headers.IndexOf("volume");
 
-            rows.RemoveAt(0);
+            //while(string.IsNullOrWhiteSpace(rows[0]))
+            //    rows.RemoveAt(0);
 
             foreach (var row in rows)
             {
-                var cols = row.Split(new char[] { ',' });
+                try {
+                    var cols = row.Split(new char[] { ',' });
 
-                var date = DateTime.Parse(cols[dateIndex]);
+                    var date = DateTime.Parse(cols[dateIndex]);
 
-                if (!dates.Contains(date))
+                    if (!dates.Contains(date))
+                        continue;
+
+                    var close = double.Parse(cols[closeIndex]);
+                    //var volume = double.Parse(cols[closeIndex]);
+                } catch
+                {
                     continue;
-
-                var close = double.Parse(cols[closeIndex]);
-                //var volume = double.Parse(cols[closeIndex]);
+                }
             }
 
 

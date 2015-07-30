@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using MarketCallLibs;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -11,7 +12,7 @@ using System.Web;
 
 namespace OpinionMiner
 {
-    public class StockChaseMiner : IMiner
+    public class StockChaseOpinionMiner : IOpinionMiner
     {
         private string _format = "http://www.stockchase.com/opinions/recent/sort/date/page/{0}/direction/desc/max/120";
         private int _failures = 0;
@@ -81,15 +82,15 @@ namespace OpinionMiner
                     } catch {}
 
                     var opinion = new Opinion
-                    {
-                        Date = dateTime,
-                        Signal = signal,
-                        Company = company,
-                        Expert = expert,
-                        OpinionString = opinionString,
-                        Price = priceValue,
-                        Symbol = symbol                       
-                    };
+                    (
+                        dateTime,
+                        signal,
+                        company,
+                        expert,
+                        opinionString,
+                        priceValue,
+                        symbol                       
+                    );
                     opinions.Add(opinion);
                 }
                 catch(Exception ex)
@@ -104,40 +105,44 @@ namespace OpinionMiner
         public IEnumerable<Opinion> GetOpinions(DateTime stop, int max)
         {
             _failures = 0;
-            var allOpinions = new List<Opinion>();
+            var allOpinions = new ConcurrentBag<Opinion>();
 
-            //Parallel.For(1, 2000, new ParallelOptions { MaxDegreeOfParallelism=20}, i =>
+            Parallel.For(1, 2000, new ParallelOptions { MaxDegreeOfParallelism = 20 }, i =>
+               {
+                   if (System.IO.File.Exists("saved/" + i + ".html"))
+                       return;
+
+                   var page = RequestPage(i);
+                   var opinions = ParseOpinions(page);
+                   if (null == opinions || !opinions.Any())
+                       return;
+
+                   foreach (var o in opinions)
+                   {
+                       allOpinions.Add(o);
+                   }
+                   page.Save("saved/" + i + ".html");
+
+                   System.Threading.Thread.Sleep(20);
+               });
+
+            //int emptyCount = 0;
+            //for (int index = 1; index < max; index++)
             //{
-            //    if (System.IO.File.Exists("saved/" + i + ".html"))
-            //        return;
-
-            //    var page = RequestPage(i);
+            //    var page = RequestPage(index);
             //    var opinions = ParseOpinions(page);
-            //    if (null == opinions || !opinions.Any())
-            //        return;
 
-            //    page.Save("saved/" + i + ".html");
+            //    allOpinions.AddRange(opinions);
+            //    //TODO: Check for duplicates
+            //    if (opinions.Any(o => o.Date < stop) )
+            //        break;
 
-            //    System.Threading.Thread.Sleep(20);
-            //});
+            //    if (!opinions.Any())
+            //        emptyCount++;
 
-            int emptyCount = 0;
-            for (int index = 1; index < max; index++)
-            {
-                var page = RequestPage(index);
-                var opinions = ParseOpinions(page);
-
-                allOpinions.AddRange(opinions);
-                //TODO: Check for duplicates
-                if (opinions.Any(o => o.Date < stop) )
-                    break;
-
-                if (!opinions.Any())
-                    emptyCount++;
-
-                if (emptyCount > 10)
-                    break;
-            }
+            //    if (emptyCount > 10)
+            //        break;
+            //}
 
             return allOpinions;
         }

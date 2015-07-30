@@ -45,10 +45,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HtmlAgilityPackExtensions.cs" />
-    <Compile Include="IMiner.cs" />
+    <Compile Include="IOpinionMiner.cs" />
     <Compile Include="OpinionStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StockChaseMiner.cs" />
+    <Compile Include="StockChaseOpinionMiner.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MarketCallLibs\MarketCallLibs.csproj">

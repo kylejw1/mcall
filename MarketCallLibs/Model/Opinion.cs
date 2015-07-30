@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
@@ -11,13 +12,13 @@ namespace MarketCallLibs
 {
     public class Opinion : ICsvOutputtable
     {
-        public DateTime Date;
-        public string Signal;
-        public string Company;
-        public string Expert;
-        public string OpinionString;
-        public decimal Price;
-        public string Symbol;
+        public readonly DateTime Date;
+        public readonly string Signal;
+        public readonly string Company;
+        public readonly string Expert;
+        public readonly string OpinionString;
+        public readonly decimal Price;
+        public readonly string Symbol;
 
         public override bool Equals(object obj)
         {
@@ -36,7 +37,19 @@ namespace MarketCallLibs
             return hash;
         }
 
+        public Opinion(DateTime date, string signal, string company, string expert, string opinionString, decimal price, string symbol)
+        {
+            Date = date;
+            Signal = signal;
+            Company = company;
 
+            expert = Regex.Replace(expert, @"[ ]{2,}", " ");
+            expert = Regex.Replace(expert, @"[^a-zA-Z ]", "").ToLower().Trim();
+            Expert = expert;
+            OpinionString = opinionString;
+            Price = price;
+            Symbol = symbol;
+        }
 
         public override string ToString()
         {
