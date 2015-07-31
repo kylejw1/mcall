@@ -17,23 +17,18 @@ namespace MarketCall
 
             SQLiteDao dao = new SQLiteDao();
 
-            while(true)
-            {
 
-            }
-            var date = dao.GetLatestOpinionDate();
-            var ops = dao.FindOpinionsByExpert("paul");
 
             //return;
 
-            var q = new Quandl();
+            //var q = new Quandl();
 
-            var dates = new List<DateTime>();
-            for (int i = 0; i < 5; i++) {
-                 dates.Add(DateTime.Now - TimeSpan.FromDays(100) + TimeSpan.FromDays(i));
-            }
+            //var dates = new List<DateTime>();
+            //for (int i = 0; i < 5; i++) {
+            //     dates.Add(DateTime.Now - TimeSpan.FromDays(100) + TimeSpan.FromDays(i));
+            //}
 
-            var stats = q.GetStats("AAPL.Q-T", dates);
+            //var stats = q.GetStats("AAPL.Q-T", dates);
 
             var guestMiners = new List<IGuestMiner>()
             {
@@ -67,40 +62,45 @@ namespace MarketCall
                 return;
             }
 
-            var miner = new StockChaseOpinionMiner();
-
-            Console.Out.WriteLine("Opening opinion storage...");
-            var opinionStore = new OpinionStore();
-            Console.Out.WriteLine("Opinion store contains {0} opinions. Last updated {1}.  Updating...", opinionStore.Opinions.Count, opinionStore.LastUpdate.ToShortDateString());
-            var newOpinionCount = opinionStore.Update(miner);
-            Console.Out.WriteLine("Found {0} new opinions.", newOpinionCount);
-
-            Console.Out.WriteLine("Matching...");
-            var result = MatchHelpers.GetOpinionHistory(guests, opinionStore.Opinions);
-
-            foreach (var r in result)
+            foreach (var g in guests)
             {
-                Console.Out.WriteLine("{0} => {1}", r.Key, r.Value.First().ToString());
+                var opinions = dao.FindOpinionsByExpert(g.Name);
             }
 
-            var now = DateTime.Now;
-            int index = 2;
-            var directoryBase = "output/" + now.ToString("dd_MM_yyyy");
-            string directory = directoryBase;
-            while (Directory.Exists(directory))
-            {
-                directory = directoryBase + " (" + index++ + ")";
-            }
+            //var miner = new StockChaseOpinionMiner();s
 
-            Directory.CreateDirectory(directory);
+            //Console.Out.WriteLine("Opening opinion storage...");
+            //var opinionStore = new OpinionStore();
+            //Console.Out.WriteLine("Opinion store contains {0} opinions. Last updated {1}.  Updating...", opinionStore.Opinions.Count, opinionStore.LastUpdate.ToShortDateString());
+            //var newOpinionCount = opinionStore.Update(miner);
+            //Console.Out.WriteLine("Found {0} new opinions.", newOpinionCount);
 
-            Console.Out.WriteLine("Writing results to {0}", directory);
+            //Console.Out.WriteLine("Matching...");
+            //var result = MatchHelpers.GetOpinionHistory(guests, opinionStore.Opinions);
 
-            OutputWriter.WriteAll(directory, result);
+            //foreach (var r in result)
+            //{
+            //    Console.Out.WriteLine("{0} => {1}", r.Key, r.Value.First().ToString());
+            //}
 
-            Console.Out.WriteLine(Environment.NewLine + "Complete.  Press any key to exit");
+            //var now = DateTime.Now;
+            //int index = 2;
+            //var directoryBase = "output/" + now.ToString("dd_MM_yyyy");
+            //string directory = directoryBase;
+            //while (Directory.Exists(directory))
+            //{
+            //    directory = directoryBase + " (" + index++ + ")";
+            //}
 
-            Console.ReadLine();
+            //Directory.CreateDirectory(directory);
+
+            //Console.Out.WriteLine("Writing results to {0}", directory);
+
+            //OutputWriter.WriteAll(directory, result);
+
+            //Console.Out.WriteLine(Environment.NewLine + "Complete.  Press any key to exit");
+
+            //Console.ReadLine();
         }
     }
 }

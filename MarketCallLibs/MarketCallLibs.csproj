@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataAccess\SQLiteDao.cs" />
+    <Compile Include="Helpers\NameHelpers.cs" />
     <Compile Include="HtmlAgilityPackExtensions.cs" />
     <Compile Include="Miners\IOpinionMiner.cs" />
     <Compile Include="DataAccess\OpinionStore.cs" />

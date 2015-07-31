@@ -27,7 +27,8 @@ namespace MarketCallDaemon
                 catch (Exception ex)
                 {
                     Output(ex.ToString());
-                } finally
+                }
+                finally
                 {
                     Output("Cycle complete.  Sleeping for {0} hours", delay.Hours.ToString());
                     System.Threading.Thread.Sleep(delay);

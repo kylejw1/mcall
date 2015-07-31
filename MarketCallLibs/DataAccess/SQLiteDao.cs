@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MarketCallLibs.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
@@ -104,7 +105,7 @@ namespace MarketCallLibs.DataAccess
 
             connection.Close();
 
-            return opinions;
+            return NameHelpers.RemoveWeakNameMatches(opinions, expert);
         }
 
         private void CreateSkeletonDb()

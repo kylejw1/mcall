@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MarketCallLibs.Helpers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -43,9 +44,7 @@ namespace MarketCallLibs
             Signal = signal;
             Company = company;
 
-            expert = Regex.Replace(expert, @"[ ]{2,}", " ");
-            expert = Regex.Replace(expert, @"[^a-zA-Z ]", "").ToLower().Trim();
-            Expert = expert;
+            Expert = NameHelpers.Normalize(expert);
             OpinionString = opinionString;
             Price = price;
             Symbol = symbol;

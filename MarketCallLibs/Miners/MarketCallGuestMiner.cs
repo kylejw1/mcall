@@ -36,8 +36,10 @@ namespace MarketCallLibs
             foreach (var guest in json)
             {
                 var name = guest["GuestName"].ToString().Trim();
+                var dateStr = guest["Date"].ToString().Trim();
+                var date = DateTime.Parse(dateStr);
 
-                guests.Add(new Guest { Name = name });
+                guests.Add(new Guest(name, date));
             }
 
             return guests;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MarketCallLibs.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,13 @@ namespace MarketCallLibs
     {
         public string Name = "";
         public string Company = "";
+        public DateTime Date;
+
+        public Guest(string name, DateTime date)
+        {
+            Name = NameHelpers.Normalize(name);
+            Date = date;
+        }
 
         public override string ToString()
         {
