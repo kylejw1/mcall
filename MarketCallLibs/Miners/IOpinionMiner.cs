@@ -10,6 +10,6 @@ namespace OpinionMiner
 {
     public interface IOpinionMiner
     {
-        IEnumerable<Opinion> GetOpinions(DateTime stop, int max);
+        IEnumerable<Opinion> GetOpinions(DateTime stop);
     }
 }

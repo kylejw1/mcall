@@ -14,10 +14,15 @@ namespace MarketCall
     {
         static void Main(string[] args)
         {
+
             SQLiteDao dao = new SQLiteDao();
 
-            var os = new OpinionStore();
-            dao.Insert(os.Opinions);
+            while(true)
+            {
+
+            }
+            var date = dao.GetLatestOpinionDate();
+            var ops = dao.FindOpinionsByExpert("paul");
 
             //return;
 

@@ -28,7 +28,7 @@ namespace OpinionMiner
 
         public int Update(IOpinionMiner miner)
         {
-            var opinions = miner.GetOpinions(_lastUpdate, int.MaxValue).ToList();
+            var opinions = miner.GetOpinions(_lastUpdate).ToList();
 
             opinions.RemoveAll(o => Opinions.Contains(o));
 

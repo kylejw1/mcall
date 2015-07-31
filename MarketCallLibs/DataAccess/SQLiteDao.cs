@@ -42,7 +42,7 @@ namespace MarketCallLibs.DataAccess
                 opinionSql.Append(o.Price + ",");
                 opinionSql.Append("'" + o.Symbol.Replace("'", "") + "'");
                 opinionSql.Append(")");
-
+                
                 SQLiteCommand command = new SQLiteCommand(opinionSql.ToString(), connection);
                 try
                 {
@@ -54,6 +54,29 @@ namespace MarketCallLibs.DataAccess
             connection.Close();
         }
 
+        public DateTime GetLatestOpinionDate()
+        {
+            var connection = GetConnection();
+            connection.Open();
+
+            DateTime dt;
+            try {
+                string sql = String.Format("select max(date) as date from opinion");
+
+                SQLiteCommand command = new SQLiteCommand(sql, connection);
+                SQLiteDataReader reader = command.ExecuteReader();
+
+                reader.Read();
+                dt = new DateTime().AddTicks((long)reader["date"]);
+            } catch
+            {
+                dt = new DateTime();
+            }
+            connection.Close();
+            
+            return dt;
+        }
+
         public IEnumerable<Opinion> FindOpinionsByExpert(string expert)
         {
             var connection = GetConnection();
@@ -63,11 +86,11 @@ namespace MarketCallLibs.DataAccess
             SQLiteCommand command = new SQLiteCommand(sql, connection);
             SQLiteDataReader reader = command.ExecuteReader();
             //date, signal, company, expert, opinion, price, symbol
-            var dateTime = new DateTime().AddTicks((long)reader["date"]);
             var opinions = new List<Opinion>();
 
             while (reader.Read())
             {
+                var dateTime = new DateTime().AddTicks((long)reader["date"]);
                 var o = new Opinion(dateTime,
                     reader["signal"].ToString(),
                     reader["company"].ToString(),

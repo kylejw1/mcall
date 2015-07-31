@@ -102,49 +102,50 @@ namespace OpinionMiner
             return opinions;
         }
 
-        public IEnumerable<Opinion> GetOpinions(DateTime stop, int max)
+        public IEnumerable<Opinion> GetOpinions(DateTime stop)
         {
             _failures = 0;
-            var allOpinions = new ConcurrentBag<Opinion>();
+            var allOpinions = new List<Opinion>();
 
-            Parallel.For(1, 2000, new ParallelOptions { MaxDegreeOfParallelism = 20 }, i =>
-               {
-                   if (System.IO.File.Exists("saved/" + i + ".html"))
-                       return;
+            //Parallel.For(1, 2000, new ParallelOptions { MaxDegreeOfParallelism = 20 }, i =>
+            //   {
+            //       if (System.IO.File.Exists("saved/" + i + ".html"))
+            //           return;
 
-                   var page = RequestPage(i);
-                   var opinions = ParseOpinions(page);
-                   if (null == opinions || !opinions.Any())
-                       return;
+            //       var page = RequestPage(i);
+            //       var opinions = ParseOpinions(page);
+            //       if (null == opinions || !opinions.Any())
+            //           return;
 
-                   foreach (var o in opinions)
-                   {
-                       allOpinions.Add(o);
-                   }
-                   page.Save("saved/" + i + ".html");
+            //       foreach (var o in opinions)
+            //       {
+            //           allOpinions.Add(o);
+            //       }
+            //       page.Save("saved/" + i + ".html");
 
-                   System.Threading.Thread.Sleep(20);
-               });
+            //       System.Threading.Thread.Sleep(20);
+            //   });
 
-            //int emptyCount = 0;
-            //for (int index = 1; index < max; index++)
-            //{
-            //    var page = RequestPage(index);
-            //    var opinions = ParseOpinions(page);
+            int emptyCount = 0;
+            int index = 0;
+            while(index++ < Int32.MaxValue)
+            {
+                var page = RequestPage(index);
+                var opinions = ParseOpinions(page);
 
-            //    allOpinions.AddRange(opinions);
-            //    //TODO: Check for duplicates
-            //    if (opinions.Any(o => o.Date < stop) )
-            //        break;
+                allOpinions.AddRange(opinions);
+                //TODO: Check for duplicates
+                if (opinions.Any(o => o.Date < stop))
+                    break;
 
-            //    if (!opinions.Any())
-            //        emptyCount++;
+                if (!opinions.Any())
+                    emptyCount++;
 
-            //    if (emptyCount > 10)
-            //        break;
-            //}
+                if (emptyCount > 10)
+                    break;
+            }
 
-            return allOpinions;
+            return allOpinions.Distinct();
         }
     }
 }
